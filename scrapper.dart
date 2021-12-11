@@ -22,7 +22,7 @@ void main() async {
 
   final savingTimer = Stopwatch()..start();
   final json = jsonEncode(waifus);
-  final file = File('waifus.json');
+  final file = File('./waifus_raw.json');
   file.writeAsStringSync(json);
   savingTimer.stop();
 
