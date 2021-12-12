@@ -24,6 +24,7 @@ void main(List<String> args) {
     trainingData: trainingData,
     learningRate: 0.5,
     maxEpoch: 1000,
+    isOptimized: true,
   );
 
   print('Mean Squared Error: ${network.train()}');

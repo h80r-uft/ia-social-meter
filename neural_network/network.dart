@@ -8,6 +8,9 @@ class Network {
     required double learningRate,
     this.maxEpoch = 10000,
     this.bias = 1.0,
+    this.isOptimized = false,
+    this.mseThreshold =
+        0.0008, // This value is based on the average MSE of 100.000 networks. (0.0007092196915939188)
   })  : assert(
           trainingData.isNotEmpty,
           'Training data must not be empty',
@@ -44,8 +47,12 @@ class Network {
   final List<Map<String, List<double>>> trainingData;
   late List<Neuron> hiddenLayer;
   late List<Neuron> outputLayer;
+
   final int maxEpoch;
   final double bias;
+
+  final double mseThreshold;
+  final bool isOptimized;
 
   void setInputs(List<double> inputs) {
     assert(
@@ -156,6 +163,8 @@ class Network {
             return finalSum + result;
           }) /
           inputs.length;
+
+      if (isOptimized && meanSquaredError < mseThreshold) break;
 
       if (epoch > maxEpoch / 5 && meanSquaredError > 1) {
         restart();
