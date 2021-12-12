@@ -20,16 +20,16 @@ void main(List<String> args) {
     },
   ];
 
-  final network = Network(
-    trainingData: trainingData,
-    learningRate: 0.5,
-    maxEpoch: 1000,
-    isOptimized: true,
-  );
+  // final network = Network(
+  //   trainingData: trainingData,
+  //   learningRate: 0.5,
+  //   maxEpoch: 1000,
+  //   isOptimized: true,
+  // );
 
-  print('Mean Squared Error: ${network.train()}');
+  // print('Mean Squared Error: ${network.train()}');
 
-  // final network = Network.fromFile('./neural_network/xor_test/network_data.h8');
+  final network = Network.fromFile('./neural_network/xor_test/network_data.h8');
 
   final inputs = trainingData.map((data) => data['input']!).toList();
 
@@ -38,5 +38,5 @@ void main(List<String> args) {
     print("Saida = ${network.predict(inputs[i])}\n");
   }
 
-  network.saveTraining('./neural_network/xor_test/network_data');
+  // network.saveTraining('./neural_network/xor_test/network_data');
 }
