@@ -42,8 +42,8 @@ class Network {
   }
 
   final List<Map<String, List<double>>> trainingData;
-  late final List<Neuron> hiddenLayer;
-  late final List<Neuron> outputLayer;
+  late List<Neuron> hiddenLayer;
+  late List<Neuron> outputLayer;
   final int maxEpoch;
   final double bias;
 
@@ -111,19 +111,23 @@ class Network {
   }
 
   void restart() {
-    hiddenLayer.map(
-      (e) => Neuron(
-        weightsCount: e.weights.length,
-        learningRate: e.learningRate,
-      ),
-    );
+    hiddenLayer = hiddenLayer
+        .map(
+          (e) => Neuron(
+            weightsCount: e.weights.length,
+            learningRate: e.learningRate,
+          ),
+        )
+        .toList();
 
-    outputLayer.map(
-      (e) => Neuron(
-        weightsCount: e.weights.length,
-        learningRate: e.learningRate,
-      ),
-    );
+    outputLayer = outputLayer
+        .map(
+          (e) => Neuron(
+            weightsCount: e.weights.length,
+            learningRate: e.learningRate,
+          ),
+        )
+        .toList();
   }
 
   double train() {
