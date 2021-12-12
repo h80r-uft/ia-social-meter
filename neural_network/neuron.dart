@@ -3,9 +3,10 @@ import 'dart:math';
 import 'math.dart';
 
 class Neuron {
-  Neuron(int weightsCount)
-      : learningRate = 0.1,
-        inputs = [],
+  Neuron({
+    required int weightsCount,
+    required this.learningRate,
+  })  : inputs = [],
         weights = List.generate(
           weightsCount,
           (index) => _random.nextDouble() * 2 - 1,
@@ -13,9 +14,9 @@ class Neuron {
 
   static final _random = Random();
 
-  double learningRate;
+  final double learningRate;
   List<double> inputs;
-  List<double> weights;
+  final List<double> weights;
 
   double evaluate() {
     var index = 0;
