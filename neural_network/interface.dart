@@ -1,20 +1,6 @@
 import 'network.dart';
 
 void main(List<String> args) {
-  final inputs = [
-    [-1.0, -1.0],
-    [1.0, -1.0],
-    [-1.0, 1.0],
-    [1.0, 1.0],
-  ];
-
-  final outputs = [
-    [-1.0],
-    [1.0],
-    [1.0],
-    [-1.0],
-  ];
-
   final trainingData = [
     {
       'input': [-1.0, -1.0],
@@ -42,17 +28,10 @@ void main(List<String> args) {
 
   print('Main Squared Error: ${network.train()}');
 
+  final inputs = trainingData.map((data) => data['input']!).toList();
+
   for (int i = 0; i < inputs.length; i++) {
-    for (int j = 0; j < inputs.first.length; j++) {
-      print("Entrada[$j] = ${inputs[i][j]}");
-    }
-
-    network.feedForward(inputs[i]);
-
-    for (int j = 0; j < outputs.first.length; j++) {
-      print("Saida[$j] = ${network.evaluate(j)}");
-    }
-
-    print("\n");
+    print("Entrada = ${inputs[i]}");
+    print("Saida = ${network.predict(inputs[i])}\n");
   }
 }

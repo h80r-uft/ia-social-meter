@@ -161,4 +161,9 @@ class Network {
 
     return meanSquaredError;
   }
+
+  List<double> predict(List<double> input) {
+    feedForward(input);
+    return outputLayer.map((e) => e.evaluate()).toList();
+  }
 }
