@@ -2,15 +2,43 @@ import 'dart:math';
 
 import 'neuron.dart';
 
+/// Network creates a multilayer perceptron neural network, that can be trained
+/// and used to predict the output of a given input.
+///
+/// {@tool snippet}
+///
+/// ```dart
+/// final network = Network(
+///   trainingData: trainingData,
+///   learningRate: 0.5,
+///   maxEpoch: 1000,
+///   isOptimized: true,
+/// );
+/// ```
+/// {@end-tool}
 class Network {
+  /// Creates a new [Network].
+  ///
+  /// [trainingData] must follow a specific format:
+  ///
+  /// {@tool snippet}
+  ///
+  /// ```dart
+  /// final trainingData = [
+  ///   {'input': [-1.0, -1.0], 'output': [-1.0]},
+  ///   {'input': [-1.0, 1.0], 'output': [1.0]},
+  ///   {'input': [1.0, -1.0], 'output': [1.0]},
+  ///   {'input': [1.0, 1.0], 'output': [-1.0]},
+  /// ];
+  /// ```
+  /// {@end-tool}
   Network({
     required this.trainingData,
     required double learningRate,
     this.maxEpoch = 10000,
     this.bias = 1.0,
     this.isOptimized = false,
-    this.mseThreshold =
-        0.0008, // This value is based on the average MSE of 100.000 networks. (0.0007092196915939188)
+    this.mseThreshold = 0.0008,
   })  : assert(
           trainingData.isNotEmpty,
           'Training data must not be empty',
@@ -24,8 +52,8 @@ class Network {
           'Training data must contain an output layer',
         ) {
     final inputCount = trainingData.first['input']!.length;
-    final hiddenCount = 2 * inputCount + 1;
     final outputCount = trainingData.first['output']!.length;
+    final hiddenCount = (2 * inputCount / 3 + outputCount).round();
 
     hiddenLayer = List.generate(
       hiddenCount,
@@ -44,16 +72,44 @@ class Network {
     );
   }
 
+  /// The training data for the network.
   final List<Map<String, List<double>>> trainingData;
+
+  /// The hidden layer of neurons.
+  ///
+  /// This layer is responsible to receive the input data and to calculate the
+  /// output of the hidden layer.
+  ///
+  /// The amount of neurons is determined by the following formula:
+  /// `(2 * inputLayer.length / 3 + outputLayer.length)`.
   late List<Neuron> hiddenLayer;
+
+  /// The output layer of neurons.
+  ///
+  /// This layer is responsible to receive the output of the hidden layer and
+  /// calculate the output of the network.
   late List<Neuron> outputLayer;
 
+  /// The max number of iterations the network will run before stopping.
   final int maxEpoch;
+
+  /// The network's bias.
   final double bias;
 
+  /// The minimum error threshold for the network to stop training before the
+  /// maximum number of epochs is reached.
+  ///
+  /// The default value was chosen based on the average MSE of 100.000 networks,
+  /// which was 0.0007092196915939188.
   final double mseThreshold;
+
+  /// Whether the network is optimized or not.
   final bool isOptimized;
 
+  /// This function sends the input data to the hidden layer.
+  ///
+  /// [inputs] must be the same length of the amount of weights in any hidden
+  /// layer's neuron, ignoring the bias.
   void setInputs(List<double> inputs) {
     assert(
       inputs.length + 1 == hiddenLayer.first.weights.length,
@@ -67,6 +123,7 @@ class Network {
     }
   }
 
+  /// This function sends the output of the hidden layer to the output layer.
   void feedForward(List<double> values) {
     setInputs(values);
 
@@ -83,6 +140,11 @@ class Network {
     }
   }
 
+  /// This function is responsible for calculating the network's deltas and
+  /// updating the weights of the hidden and output layers.
+  ///
+  /// [expected] must be the same length of the amount of neurons in the
+  /// output layer.
   void backPropagate(List<double> expected) {
     assert(
       expected.length == outputLayer.length,
@@ -109,14 +171,17 @@ class Network {
     }
   }
 
+  /// This function makes a specific neuron in the output layer evaluate it's
+  /// output.
+  ///
+  /// [index] must be a valid index of the output layer.
   double evaluate(int index) {
     return outputLayer[index].evaluate();
   }
 
-  double winnerTakesAll() {
-    return outputLayer.map((e) => e.evaluate()).reduce(max);
-  }
-
+  /// This function restarts the network's training.
+  ///
+  /// This reset recreates the network's hidden and output layers.
   void restart() {
     hiddenLayer = hiddenLayer
         .map(
@@ -137,6 +202,9 @@ class Network {
         .toList();
   }
 
+  /// This function trains the network.
+  ///
+  /// The returned value is the final Mean Squared Error of the network.
   double train() {
     var meanSquaredError = 0.0;
 
@@ -175,6 +243,8 @@ class Network {
     return meanSquaredError;
   }
 
+  /// This function returns the result predicted by the trained network for
+  /// the given input.
   List<double> predict(List<double> input) {
     feedForward(input);
     return outputLayer.map((e) => e.evaluate()).toList();
