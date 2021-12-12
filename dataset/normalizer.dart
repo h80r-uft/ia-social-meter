@@ -1,16 +1,30 @@
 import 'dart:convert';
 import 'dart:io';
 
-void main() {
-  final data = (jsonDecode(
-    File(
-      './dataset/waifus_filtered.json',
-    ).readAsStringSync(),
-  ) as List<dynamic>)
-      .map((e) => e as Map<String, dynamic>)
-      .toList();
+void normalizer(Map<String, dynamic> waifu) {
+  if (maxxedWaifu == null) setMaxxedWaifu();
 
-  final maxxedWaifu = data.fold<Map<String, double>>(
+  waifu['age'] = (waifu['age'] / maxxedWaifu!['age']) * 2 - 1;
+  waifu['bust'] = (waifu['bust'] / maxxedWaifu!['bust']) * 2 - 1;
+  waifu['height'] = (waifu['height'] / maxxedWaifu!['height']) * 2 - 1;
+  waifu['weight'] = (waifu['weight'] / maxxedWaifu!['weight']) * 2 - 1;
+  waifu['hip'] = (waifu['hip'] / maxxedWaifu!['hip']) * 2 - 1;
+  waifu['waist'] = (waifu['waist'] / maxxedWaifu!['waist']) * 2 - 1;
+  try {
+    waifu['likes'] = (waifu['likes'] / maxxedWaifu!['likes']) * 2 - 1;
+    waifu['trash'] = (waifu['trash'] / maxxedWaifu!['trash']) * 2 - 1;
+  } catch (e) {
+    print('This waifu has no trash or likes');
+  }
+}
+
+List<Map<String, dynamic>>? filteredData;
+Map<String, dynamic>? maxxedWaifu;
+
+void setMaxxedWaifu() {
+  if (filteredData == null) loadData();
+
+  maxxedWaifu = filteredData!.fold<Map<String, double>>(
     {
       'age': 0.0,
       'bust': 0.0,
@@ -39,17 +53,24 @@ void main() {
           waifu['trash'] > max['trash'] ? waifu['trash'] * 1.01 : max['trash'],
     },
   );
+}
 
-  final normalizedData = [...data]..forEach((waifu) {
-      waifu['age'] = (waifu['age'] / maxxedWaifu['age']) * 2 - 1;
-      waifu['bust'] = (waifu['bust'] / maxxedWaifu['bust']) * 2 - 1;
-      waifu['height'] = (waifu['height'] / maxxedWaifu['height']) * 2 - 1;
-      waifu['weight'] = (waifu['weight'] / maxxedWaifu['weight']) * 2 - 1;
-      waifu['hip'] = (waifu['hip'] / maxxedWaifu['hip']) * 2 - 1;
-      waifu['waist'] = (waifu['waist'] / maxxedWaifu['waist']) * 2 - 1;
-      waifu['likes'] = (waifu['likes'] / maxxedWaifu['likes']) * 2 - 1;
-      waifu['trash'] = (waifu['trash'] / maxxedWaifu['trash']) * 2 - 1;
-    });
+void loadData() {
+  filteredData = (jsonDecode(
+    File(
+      './dataset/waifus_filtered.json',
+    ).readAsStringSync(),
+  ) as List<dynamic>)
+      .map((e) => e as Map<String, dynamic>)
+      .toList();
+}
+
+void main() {
+  loadData();
+  setMaxxedWaifu();
+
+  final normalizedData = [...filteredData!]
+    ..forEach((waifu) => normalizer(waifu));
 
   File('./dataset/waifus_normalized.json').writeAsStringSync(
     jsonEncode(normalizedData),
