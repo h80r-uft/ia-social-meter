@@ -17,10 +17,27 @@ void main(List<String> args) {
     [-1.0],
   ];
 
+  final trainingData = [
+    {
+      'input': [-1.0, -1.0],
+      'output': [-1.0]
+    },
+    {
+      'input': [-1.0, 1.0],
+      'output': [1.0]
+    },
+    {
+      'input': [1.0, -1.0],
+      'output': [1.0]
+    },
+    {
+      'input': [1.0, 1.0],
+      'output': [-1.0]
+    },
+  ];
+
   final network = Network(
-    inputCount: inputs.first.length,
-    hiddenCount: 2 * inputs.first.length + 1,
-    outputCount: outputs.first.length,
+    trainingData: trainingData,
     learningRate: 0.5,
   );
 
@@ -51,8 +68,6 @@ void main(List<String> args) {
       network.restart();
       epoch = 0;
     }
-
-    print(epoch);
   }
 
   print('Mean Squared Error: $meanSquaredError');

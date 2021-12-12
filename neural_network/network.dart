@@ -4,29 +4,45 @@ import 'neuron.dart';
 
 class Network {
   Network({
-    required int inputCount,
-    required int hiddenCount,
-    required int outputCount,
+    required List<Map<String, List<double>>> trainingData,
     required double learningRate,
     this.bias = 1.0,
-  })  : hiddenLayer = List.generate(
-          hiddenCount,
-          (i) => Neuron(
-            weightsCount: inputCount + 1,
-            learningRate: learningRate,
-          ),
+  })  : assert(
+          trainingData.isNotEmpty,
+          'Training data must not be empty',
         ),
-        outputLayer = List.generate(
-          outputCount,
-          (i) => Neuron(
-            weightsCount: hiddenCount + 1,
-            learningRate: learningRate,
-          ),
-        );
+        assert(
+          trainingData.first.containsKey('input'),
+          'Training data must contain an input layer',
+        ),
+        assert(
+          trainingData.first.containsKey('output'),
+          'Training data must contain an output layer',
+        ) {
+    final inputCount = trainingData.first['input']!.length;
+    final hiddenCount = 2 * inputCount + 1;
+    final outputCount = trainingData.first['output']!.length;
 
-  final List<Neuron> hiddenLayer;
-  final List<Neuron> outputLayer;
-  final double bias;
+    hiddenLayer = List.generate(
+      hiddenCount,
+      (i) => Neuron(
+        weightsCount: inputCount + 1,
+        learningRate: learningRate,
+      ),
+    );
+
+    outputLayer = List.generate(
+      outputCount,
+      (i) => Neuron(
+        weightsCount: hiddenCount + 1,
+        learningRate: learningRate,
+      ),
+    );
+  }
+
+  late final List<Neuron> hiddenLayer;
+  late final List<Neuron> outputLayer;
+  late final double bias;
 
   void setInputs(List<double> inputs) {
     assert(
