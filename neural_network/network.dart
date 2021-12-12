@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import '../h8_format/file_support.dart' as FileSupport;
 import 'neuron.dart';
 
 /// Network creates a multilayer perceptron neural network, that can be trained
@@ -39,20 +40,18 @@ class Network {
     this.bias = 1.0,
     this.isOptimized = false,
     this.mseThreshold = 0.0008,
-  })  : assert(
-          trainingData.isNotEmpty,
-          'Training data must not be empty',
-        ),
+  })  : assert(trainingData != null, 'trainingData must not be null'),
+        assert(trainingData!.isNotEmpty, 'Training data must not be empty'),
         assert(
-          trainingData.first.containsKey('input'),
+          trainingData!.first.containsKey('input'),
           'Training data must contain an input layer',
         ),
         assert(
-          trainingData.first.containsKey('output'),
+          trainingData!.first.containsKey('output'),
           'Training data must contain an output layer',
         ) {
-    final inputCount = trainingData.first['input']!.length;
-    final outputCount = trainingData.first['output']!.length;
+    final inputCount = trainingData!.first['input']!.length;
+    final outputCount = trainingData!.first['output']!.length;
     final hiddenCount = (2 * inputCount / 3 + outputCount).round();
 
     hiddenLayer = List.generate(
@@ -72,8 +71,18 @@ class Network {
     );
   }
 
+  Network.empty()
+      : trainingData = null,
+        maxEpoch = null,
+        mseThreshold = null,
+        isOptimized = null;
+
+  factory Network.fromFile(String path) {
+    return FileSupport.fromFile(path);
+  }
+
   /// The training data for the network.
-  final List<Map<String, List<double>>> trainingData;
+  final List<Map<String, List<double>>>? trainingData;
 
   /// The hidden layer of neurons.
   ///
@@ -91,20 +100,20 @@ class Network {
   late List<Neuron> outputLayer;
 
   /// The max number of iterations the network will run before stopping.
-  final int maxEpoch;
+  final int? maxEpoch;
 
   /// The network's bias.
-  final double bias;
+  late final double bias;
 
   /// The minimum error threshold for the network to stop training before the
   /// maximum number of epochs is reached.
   ///
   /// The default value was chosen based on the average MSE of 100.000 networks,
   /// which was 0.0007092196915939188.
-  final double mseThreshold;
+  final double? mseThreshold;
 
   /// Whether the network is optimized or not.
-  final bool isOptimized;
+  final bool? isOptimized;
 
   /// This function sends the input data to the hidden layer.
   ///
@@ -206,12 +215,17 @@ class Network {
   ///
   /// The returned value is the final Mean Squared Error of the network.
   double train() {
+    assert(trainingData != null, 'Training data must not be null');
+    assert(maxEpoch != null, 'Max epoch must not be null');
+    assert(isOptimized != null, 'Is optimized must not be null');
+    assert(mseThreshold != null, 'MSE threshold must not be null');
+
     var meanSquaredError = 0.0;
 
-    final inputs = trainingData.map((e) => e['input']!).toList();
-    final outputs = trainingData.map((e) => e['output']!).toList();
+    final inputs = trainingData!.map((e) => e['input']!).toList();
+    final outputs = trainingData!.map((e) => e['output']!).toList();
 
-    for (var epoch = 0; epoch < maxEpoch; epoch++) {
+    for (var epoch = 0; epoch < maxEpoch!; epoch++) {
       var inputIndex = 0;
       meanSquaredError = inputs.fold<double>(0.0, (finalSum, input) {
             feedForward(input);
@@ -232,9 +246,9 @@ class Network {
           }) /
           inputs.length;
 
-      if (isOptimized && meanSquaredError < mseThreshold) break;
+      if (isOptimized! && meanSquaredError < mseThreshold!) break;
 
-      if (epoch > maxEpoch / 5 && meanSquaredError > 1) {
+      if (epoch > maxEpoch! / 5 && meanSquaredError > 1) {
         restart();
         epoch = 0;
       }
@@ -248,5 +262,9 @@ class Network {
   List<double> predict(List<double> input) {
     feedForward(input);
     return outputLayer.map((e) => e.evaluate()).toList();
+  }
+
+  void saveTraining(String fileName) {
+    this.toFile(fileName);
   }
 }

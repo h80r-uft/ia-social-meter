@@ -8,17 +8,22 @@ class Neuron {
   Neuron({
     required int weightsCount,
     required this.learningRate,
-  })  : inputs = [],
+  })  : assert(learningRate != null, 'Learning rate must not be null'),
+        inputs = [],
         weights = List.generate(
           weightsCount,
           (index) => _random.nextDouble() * 2 - 1,
         );
 
+  Neuron.fromWeights({required this.weights})
+      : inputs = [],
+        learningRate = null;
+
   /// The pseudo-random number generator used to generate weights.
   static final _random = Random();
 
   /// The learning rate of the neuron.
-  final double learningRate;
+  final double? learningRate;
 
   /// The inputs to the neuron.
   List<double> inputs;
@@ -42,7 +47,7 @@ class Neuron {
     final delta = (1 - pow(evaluate(), 2)) * error;
 
     for (var i = 0; i < weights.length; i++) {
-      weights[i] += learningRate * delta * inputs[i];
+      weights[i] += learningRate! * delta * inputs[i];
     }
   }
 }
