@@ -29,10 +29,14 @@ void main(List<String> args) {
 
   print('Mean Squared Error: ${network.train()}');
 
+  // final network = Network.fromFile('./neural_network/xor_test/network_data.h8');
+
   final inputs = trainingData.map((data) => data['input']!).toList();
 
   for (int i = 0; i < inputs.length; i++) {
     print("Entrada = ${inputs[i]}");
     print("Saida = ${network.predict(inputs[i])}\n");
   }
+
+  network.saveTraining('./neural_network/xor_test/network_data');
 }

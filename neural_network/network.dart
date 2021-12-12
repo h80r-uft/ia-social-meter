@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import '../h8_format/file_support.dart' as FileSupport;
+import 'file_support.dart' as FileSupport;
 import 'neuron.dart';
 
 /// Network creates a multilayer perceptron neural network, that can be trained
@@ -264,7 +264,7 @@ class Network {
     return outputLayer.map((e) => e.evaluate()).toList();
   }
 
-  void saveTraining(String fileName) {
-    this.toFile(fileName);
+  void saveTraining(String filePath) {
+    this.toFile(filePath);
   }
 }
