@@ -1,4 +1,4 @@
-import 'network.dart';
+import '../network.dart';
 
 void main(List<String> args) {
   final trainingData = [
