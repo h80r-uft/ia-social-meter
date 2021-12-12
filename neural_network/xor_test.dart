@@ -26,7 +26,7 @@ void main(List<String> args) {
     maxEpoch: 1000,
   );
 
-  print('Main Squared Error: ${network.train()}');
+  print('Mean Squared Error: ${network.train()}');
 
   final inputs = trainingData.map((data) => data['input']!).toList();
 
