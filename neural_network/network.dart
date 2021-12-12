@@ -34,29 +34,30 @@ class Network {
       'Invalid inputs',
     );
 
-    inputs.insert(0, bias);
+    final newInputs = [bias, ...inputs];
 
     for (int i = 0; i < hiddenLayer.length; i++) {
-      hiddenLayer[i].inputs = inputs;
+      hiddenLayer[i].inputs = newInputs;
     }
   }
 
-  void evaluate(List<double> values) {
+  void feedForward(List<double> values) {
     setInputs(values);
 
-    final newInputs = List.generate(
-      hiddenLayer.length,
-      (i) => hiddenLayer[i].evaluate(),
-    );
-
-    newInputs.insert(0, bias);
+    final newInputs = [
+      bias,
+      ...List.generate(
+        hiddenLayer.length,
+        (i) => hiddenLayer[i].evaluate(),
+      )
+    ];
 
     for (var i = 0; i < outputLayer.length; i++) {
       outputLayer[i].inputs = newInputs;
     }
   }
 
-  void train(List<double> expected) {
+  void backPropagate(List<double> expected) {
     assert(
       expected.length == outputLayer.length,
       'Invalid expected values',
@@ -82,7 +83,27 @@ class Network {
     }
   }
 
+  double evaluate(int index) {
+    return outputLayer[index].evaluate();
+  }
+
   double winnerTakesAll() {
     return outputLayer.map((e) => e.evaluate()).reduce(max);
+  }
+
+  void restart() {
+    hiddenLayer.map(
+      (e) => Neuron(
+        weightsCount: e.weights.length,
+        learningRate: e.learningRate,
+      ),
+    );
+
+    outputLayer.map(
+      (e) => Neuron(
+        weightsCount: e.weights.length,
+        learningRate: e.learningRate,
+      ),
+    );
   }
 }
