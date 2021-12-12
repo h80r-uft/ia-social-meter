@@ -4,8 +4,9 @@ import 'neuron.dart';
 
 class Network {
   Network({
-    required List<Map<String, List<double>>> trainingData,
+    required this.trainingData,
     required double learningRate,
+    this.maxEpoch = 10000,
     this.bias = 1.0,
   })  : assert(
           trainingData.isNotEmpty,
@@ -40,9 +41,11 @@ class Network {
     );
   }
 
+  final List<Map<String, List<double>>> trainingData;
   late final List<Neuron> hiddenLayer;
   late final List<Neuron> outputLayer;
-  late final double bias;
+  final int maxEpoch;
+  final double bias;
 
   void setInputs(List<double> inputs) {
     assert(
@@ -121,5 +124,41 @@ class Network {
         learningRate: e.learningRate,
       ),
     );
+  }
+
+  double train() {
+    var meanSquaredError = 0.0;
+
+    final inputs = trainingData.map((e) => e['input']!).toList();
+    final outputs = trainingData.map((e) => e['output']!).toList();
+
+    for (var epoch = 0; epoch < maxEpoch; epoch++) {
+      var inputIndex = 0;
+      meanSquaredError = inputs.fold<double>(0.0, (finalSum, input) {
+            feedForward(input);
+
+            var outputIndex = 0;
+            final result =
+                outputs[inputIndex++].fold<double>(0.0, (sum, output) {
+              return sum +
+                  pow(
+                    (output - evaluate(outputIndex++)),
+                    2,
+                  );
+            });
+
+            backPropagate(outputs[inputIndex - 1]);
+
+            return finalSum + result;
+          }) /
+          inputs.length;
+
+      if (epoch > maxEpoch / 5 && meanSquaredError > 1) {
+        restart();
+        epoch = 0;
+      }
+    }
+
+    return meanSquaredError;
   }
 }

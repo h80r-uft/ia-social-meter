@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'network.dart';
 
 void main(List<String> args) {
@@ -39,38 +37,10 @@ void main(List<String> args) {
   final network = Network(
     trainingData: trainingData,
     learningRate: 0.5,
+    maxEpoch: 1000,
   );
 
-  double? meanSquaredError;
-  final epochMax = 1000;
-
-  for (var epoch = 0; epoch < epochMax; epoch++) {
-    var inputIndex = 0;
-    meanSquaredError = inputs.fold<double>(0.0, (finalSum, input) {
-          network.feedForward(input);
-
-          var outputIndex = 0;
-          final result = outputs[inputIndex++].fold<double>(0.0, (sum, output) {
-            return sum +
-                pow(
-                  (output - network.evaluate(outputIndex++)),
-                  2,
-                );
-          });
-
-          network.backPropagate(outputs[inputIndex - 1]);
-
-          return finalSum + result;
-        }) /
-        inputs.length;
-
-    if (meanSquaredError > 1 && epoch > epochMax / 5) {
-      network.restart();
-      epoch = 0;
-    }
-  }
-
-  print('Mean Squared Error: $meanSquaredError');
+  print('Main Squared Error: ${network.train()}');
 
   for (int i = 0; i < inputs.length; i++) {
     for (int j = 0; j < inputs.first.length; j++) {
