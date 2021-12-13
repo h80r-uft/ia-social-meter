@@ -1,6 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
 
+List<double> denormalize(List<double> data) {
+  return [
+    (data.first + 1) / 2 * maxxedWaifu!['likes'],
+    (data.last + 1) / 2 * maxxedWaifu!['trash'],
+  ];
+}
+
 void normalizer(Map<String, dynamic> waifu) {
   if (maxxedWaifu == null) setMaxxedWaifu();
 
@@ -13,9 +20,7 @@ void normalizer(Map<String, dynamic> waifu) {
   try {
     waifu['likes'] = (waifu['likes'] / maxxedWaifu!['likes']) * 2 - 1;
     waifu['trash'] = (waifu['trash'] / maxxedWaifu!['trash']) * 2 - 1;
-  } catch (e) {
-    print('This waifu has no trash or likes');
-  }
+  } catch (e) {}
 }
 
 List<Map<String, dynamic>>? filteredData;
