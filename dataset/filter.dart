@@ -11,6 +11,7 @@ void main(List<String> arguments) {
   final filtered = json
       .where((e) =>
           e['age'] != null &&
+          e['age'] != 0 &&
           e['bust'] != null &&
           e['height'] != null &&
           e['weight'] != null &&
