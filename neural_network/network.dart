@@ -225,7 +225,10 @@ class Network {
     final inputs = trainingData!.map((e) => e['input']!).toList();
     final outputs = trainingData!.map((e) => e['output']!).toList();
 
+    var bestEpoch = 10.0;
+
     for (var epoch = 0; epoch < maxEpoch!; epoch++) {
+      print('Epoch: $epoch | MSE: $meanSquaredError | Best: $bestEpoch');
       var inputIndex = 0;
       meanSquaredError = inputs.fold<double>(0.0, (finalSum, input) {
             feedForward(input);
@@ -245,6 +248,8 @@ class Network {
             return finalSum + result;
           }) /
           inputs.length;
+
+      bestEpoch = min(meanSquaredError, bestEpoch);
 
       if (isOptimized! && meanSquaredError < mseThreshold!) break;
 

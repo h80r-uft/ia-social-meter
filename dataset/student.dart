@@ -8,7 +8,7 @@ double _normalize(num? input, num min, num max) {
 }
 
 class Student {
-  static const jobDictionary = {
+  static const _jobDictionary = {
     'teacher': 0,
     'health': 1,
     'services': 2,
@@ -16,20 +16,20 @@ class Student {
     'other': 4,
   };
 
-  static const reasonDictionary = {
+  static const _reasonDictionary = {
     'home': 0,
     'reputation': 1,
     'course': 2,
     'other': 3,
   };
 
-  static const guardianDictionary = {
+  static const _guardianDictionary = {
     'mother': 0,
     'father': 1,
     'other': 2,
   };
 
-  static const binaryDictionary = {
+  static const _binaryDictionary = {
     'yes': 1.0,
     'no': -1.0,
   };
@@ -49,26 +49,26 @@ class Student {
     fatherEducation =
         _normalize(int.parse(fragments[7]), 0, 4).normalizedToNegative;
     motherJob =
-        _normalize(jobDictionary[fragments[8]], 0, 4).normalizedToNegative;
+        _normalize(_jobDictionary[fragments[8]], 0, 4).normalizedToNegative;
     fatherJob =
-        _normalize(jobDictionary[fragments[9]], 0, 4).normalizedToNegative;
+        _normalize(_jobDictionary[fragments[9]], 0, 4).normalizedToNegative;
     reason =
-        _normalize(reasonDictionary[fragments[10]], 0, 3).normalizedToNegative;
-    guardian = _normalize(guardianDictionary[fragments[11]], 0, 2)
+        _normalize(_reasonDictionary[fragments[10]], 0, 3).normalizedToNegative;
+    guardian = _normalize(_guardianDictionary[fragments[11]], 0, 2)
         .normalizedToNegative;
     travelTime =
         _normalize(int.parse(fragments[12]), 0, 4).normalizedToNegative;
     studyTime = _normalize(int.parse(fragments[13]), 0, 4).normalizedToNegative;
     failures = _normalize(partialFailures <= 3 ? partialFailures : 4, 0, 2)
         .normalizedToNegative;
-    schoolSupport = binaryDictionary[fragments[15]] ?? -1.0;
-    familySupport = binaryDictionary[fragments[16]] ?? -1.0;
-    paid = binaryDictionary[fragments[17]] ?? -1.0;
-    activities = binaryDictionary[fragments[18]] ?? -1.0;
-    nursery = binaryDictionary[fragments[19]] ?? -1.0;
-    higher = binaryDictionary[fragments[20]] ?? -1.0;
-    internet = binaryDictionary[fragments[21]] ?? -1.0;
-    romantic = binaryDictionary[fragments[22]] ?? -1.0;
+    schoolSupport = _binaryDictionary[fragments[15]] ?? -1.0;
+    familySupport = _binaryDictionary[fragments[16]] ?? -1.0;
+    paid = _binaryDictionary[fragments[17]] ?? -1.0;
+    activities = _binaryDictionary[fragments[18]] ?? -1.0;
+    nursery = _binaryDictionary[fragments[19]] ?? -1.0;
+    higher = _binaryDictionary[fragments[20]] ?? -1.0;
+    internet = _binaryDictionary[fragments[21]] ?? -1.0;
+    romantic = _binaryDictionary[fragments[22]] ?? -1.0;
     familyRelationship =
         _normalize(int.parse(fragments[23]), 0, 5).normalizedToNegative;
     freeTime = _normalize(int.parse(fragments[24]), 0, 5).normalizedToNegative;
