@@ -152,11 +152,11 @@ class Student {
         weekendAlcohol,
         health,
         absences,
+        firstGrade,
+        secondGrade,
       ];
 
   List<double> get outputs => [
-        firstGrade,
-        secondGrade,
         finalGrade,
       ];
 }
