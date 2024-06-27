@@ -1,8 +1,8 @@
-# Waifu-Meter
+# Social-Meter
 
 ## Objetivo
 
-Desenvolver uma rede neural perceptron multicamadas capaz de prever a pontuação de uma entrada, _"Waifu"_, através de seus atributos de altura, idade, peso e medidas corporais.
+Desenvolver uma rede neural perceptron multicamadas capaz de prever a pontuação de uma entrada avaliada publicamente online, através de seus dados.
 
 ## Abordagem
 
@@ -10,14 +10,14 @@ Desenvolver uma rede neural perceptron multicamadas capaz de prever a pontuaçã
 
 #### Método de coleta
 
-Os dados foram coletados utilizando uma versão simplificada do scrapper [waifu-dataset](https://github.com/thewaifuproject/waifu-dataset), convertida para a linguagem `dart`.
+Os dados foram coletados utilizando uma versão simplificada do scrapper [dataset](https://github.com/thewaifuproject/waifu-dataset), convertida para a linguagem `dart`.
 
 #### Método de filtragem
 
-A filtragem dos dados é efetuada para manter apenas entradas que possuem valores de idade, altura, peso, busto, cintura e quadril válidos, visto que o objetivo é observar a relação entre estes valores e a pontuação da entrada.
+A filtragem dos dados é efetuada para manter apenas entradas que possuem dados válidos, visto que o objetivo é observar a relação entre estes valores e a pontuação da entrada.
 
 #### Fonte
-Todos os dados vêm da plataforma [MyWaifuList](https://mywaifulist.moe), onde usuários podem cadastrar novas entradas e votar nestas.
+Todos os dados vêm desta [plataforma](https://mywaifulist.moe), onde usuários podem cadastrar novas entradas e votar nestas.
 
 ### Pontuação
 
